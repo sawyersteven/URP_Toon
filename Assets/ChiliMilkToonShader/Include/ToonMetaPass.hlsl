@@ -1,4 +1,4 @@
-﻿#ifndef UNIVERSAL_TOON_META_PASS_INCLUDED
+#ifndef UNIVERSAL_TOON_META_PASS_INCLUDED
 #define UNIVERSAL_TOON_META_PASS_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/MetaInput.hlsl"
@@ -40,7 +40,7 @@ half4 ToonFragmentMeta(Varyings input) : SV_Target
     MetaInput metaInput;
     metaInput.Albedo = brdfData.diffuse + brdfData.specular * brdfData.roughness * 0.5;
     metaInput.SpecularColor = surfaceData.specular;
-    metaInput.Emission = surfaceData.emission;
+        metaInput.Emission = 0;
 
     return MetaFragment(metaInput);
 }

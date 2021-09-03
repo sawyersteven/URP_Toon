@@ -12,8 +12,6 @@ half4 _BaseColor;
 half _DiffuseRampV;
 half _InShadowMapStrength;
 
-half4 _EmissionColor;
-half _OcclusionStrength;
 half _Cutoff;
 half _BumpScale;
 
@@ -42,7 +40,6 @@ TEXTURE2D(_ClipMask);   SAMPLER(sampler_ClipMask);
 #ifdef _INSHADOWMAP
 TEXTURE2D(_InShadowMap);  SAMPLER(sampler_InShadowMap);
 #endif
-TEXTURE2D(_OcclusionMap);   SAMPLER(sampler_OcclusionMap);
 TEXTURE2D(_MetallicGlossMap);   SAMPLER(sampler_MetallicGlossMap);
 TEXTURE2D(_SpecGlossMap);   SAMPLER(sampler_SpecGlossMap);
 #ifdef _SPECULARSHIFTMAP
@@ -65,8 +62,6 @@ struct SurfaceDataToon
     half  metallic;
     half  smoothness;
     half3 normalTS;
-    half3 emission;
-    half  occlusion;
     half  alpha;
     //Specular
     #ifdef _HAIRSPECULAR
@@ -147,21 +142,6 @@ half4 SampleMetallicSpecGloss(float2 uv, half albedoAlpha,half smoothness)
     return specGloss;
 }
 
-half SampleOcclusion(float2 uv)
-{
-#ifdef _OCCLUSIONMAP
-// TODO: Controls things like these by exposing SHADER_QUALITY levels (low, medium, high)
-#if defined(SHADER_API_GLES)
-    return SAMPLE_TEXTURE2D(_OcclusionMap, sampler_OcclusionMap, uv).g;
-#else
-    half occ = SAMPLE_TEXTURE2D(_OcclusionMap, sampler_OcclusionMap, uv).g;
-    return LerpWhiteTo(occ, _OcclusionStrength);
-#endif
-#else
-    return 1.0;
-#endif
-}
-
 inline void InitializeSurfaceDataToon(float2 uv,out SurfaceDataToon outSurfaceData)
 {
     half4 albedoAlpha = SampleAlbedoAlpha(uv, TEXTURE2D_ARGS(_BaseMap, sampler_BaseMap));
@@ -182,8 +162,6 @@ inline void InitializeSurfaceDataToon(float2 uv,out SurfaceDataToon outSurfaceDa
 #endif
     outSurfaceData.smoothness = specGloss.a;
     outSurfaceData.normalTS = SampleNormal(uv, TEXTURE2D_ARGS(_BumpMap, sampler_BumpMap), _BumpScale);
-    outSurfaceData.occlusion = SampleOcclusion(uv);
-    outSurfaceData.emission = SampleEmission(uv, _EmissionColor.rgb, TEXTURE2D_ARGS(_EmissionMap, sampler_EmissionMap));
 #ifdef _HAIRSPECULAR
     outSurfaceData.specularShift1 = SampleSpecularShift(uv,_SpecularShift1);
     outSurfaceData.specularShift2 = SampleSpecularShift(uv,_SpecularShift2);

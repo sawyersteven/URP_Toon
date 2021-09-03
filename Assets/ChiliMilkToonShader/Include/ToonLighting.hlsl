@@ -92,7 +92,7 @@ half DirectSpecularToon(BRDFDataToon brdfData,half3 normalWS,half3 lightDirectio
 }
 #endif  
 
-half3 GlossyEnvironmentToon(half3 reflectVector, half perceptualRoughness, half occlusion)
+    half3 GlossyEnvironmentToon(half3 reflectVector, half perceptualRoughness)
 {
 #if !defined(_ENVIRONMENTREFLECTIONS_OFF)
     half mip = PerceptualRoughnessToMipmapLevel(perceptualRoughness);
@@ -102,9 +102,9 @@ half3 GlossyEnvironmentToon(half3 reflectVector, half perceptualRoughness, half 
 #else
     half3 irradiance = encodedIrradiance.rbg;
 #endif
-    return irradiance * occlusion;
+            return irradiance;
 #else
-    return _GlossyEnvironmentColor.rgb * occlusion;
+            return _GlossyEnvironmentColor.rgb;
 #endif
 }
 
@@ -127,12 +127,12 @@ half3 SpecularBDRFToon(BRDFDataToon brdfData, SurfaceDataToon surfaceData, half3
 #endif
 }
 
-half3 GlobalIlluminationToon(BRDFDataToon brdfData, half3 bakedGI, half occlusion, half3 normalWS, half3 viewDirectionWS)
+    half3 GlobalIlluminationToon(BRDFDataToon brdfData, half3 bakedGI, half3 normalWS, half3 viewDirectionWS)
 {
     half3 reflectVector = reflect(-viewDirectionWS, normalWS);
     half fresnelTerm = Pow4(1.0 - saturate(dot(normalWS, viewDirectionWS)));
-    half3 indirectDiffuse = bakedGI * occlusion * brdfData.diffuse;
-    half3 reflection = GlossyEnvironmentToon(reflectVector, brdfData.perceptualRoughness, occlusion);
+        half3 indirectDiffuse = bakedGI * brdfData.diffuse;
+        half3 reflection = GlossyEnvironmentToon(reflectVector, brdfData.perceptualRoughness);
     float surfaceReduction = 1.0 / (brdfData.roughness2 + 1.0);
     half3 indirectSpecular = surfaceReduction * reflection * lerp(brdfData.specular, brdfData.grazingTerm, fresnelTerm);
     return indirectDiffuse + indirectSpecular;
@@ -214,7 +214,7 @@ half4 FragmentLitToon(InputDataToon inputData, SurfaceDataToon surfaceData)
     inputData.bakedGI *= aoFactor.indirectAmbientOcclusion;
 #endif
     MixRealtimeAndBakedGI(mainLight, inputData.normalWS, inputData.bakedGI);
-    half3 color = GlobalIlluminationToon(brdfData, inputData.bakedGI, surfaceData.occlusion, inputData.normalWS, inputData.viewDirectionWS);
+        half3 color = GlobalIlluminationToon(brdfData, inputData.bakedGI, inputData.normalWS, inputData.viewDirectionWS);
     color += LightingToon(brdfData, surfaceData,mainLight, inputData.normalWS, inputData.viewDirectionWS,bitangentWS);
 
 #ifdef _ADDITIONAL_LIGHTS
@@ -222,9 +222,6 @@ half4 FragmentLitToon(InputDataToon inputData, SurfaceDataToon surfaceData)
     for (uint lightIndex = 0u; lightIndex < pixelLightCount; ++lightIndex)
     {
         Light light = GetAdditionalLight(lightIndex, inputData.positionWS, shadowMask);
-    #if defined(_SCREEN_SPACE_OCCLUSION)
-        light.color *= aoFactor.directAmbientOcclusion;
-    #endif
         color += LightingToon(brdfData, surfaceData,light, inputData.normalWS, inputData.viewDirectionWS, bitangentWS);
     }
 #endif
@@ -233,7 +230,6 @@ half4 FragmentLitToon(InputDataToon inputData, SurfaceDataToon surfaceData)
     color += inputData.vertexLighting * brdfData.diffuse;
 #endif
 
-    color += surfaceData.emission;
     return half4(color, surfaceData.alpha);
 }
 

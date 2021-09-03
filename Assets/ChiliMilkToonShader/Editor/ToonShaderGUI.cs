@@ -124,10 +124,6 @@ namespace ChiliMilk.Toon.Editor
             //Base
             public static readonly string BumpMap = "_BumpMap";
             public static readonly string BumpScale = "_BumpScale";
-            public static readonly string OcclusionMap = "_OcclusionMap";
-            public static readonly string OcclusionStrength = "_OcclusionStrength";
-            public static readonly string EmissionMap = "_EmissionMap";
-            public static readonly string EmissionColor = "_EmissionColor";
             
             //Outline
             public static readonly string EnableOutline = "_EnableOutline";
@@ -219,10 +215,6 @@ namespace ChiliMilk.Toon.Editor
         //Base
         private MaterialProperty m_BumpMapProp;
         private MaterialProperty m_BumpScaleProp;
-        private MaterialProperty m_OcclusionMapProp;
-        private MaterialProperty m_OcclusionStrengthProp;
-        private MaterialProperty m_EmissionMapProp;
-        private MaterialProperty m_EmissionColorProp;
         
         //Specular
         private MaterialProperty m_MetallicProp;
@@ -271,7 +263,7 @@ namespace ChiliMilk.Toon.Editor
             m_CullProp = FindProperty(MPropertyNames.Cull, properties, false);
             m_AlphaClipProp = FindProperty(MPropertyNames.AlphaClip, properties, false);
             m_InverseClipMaskProp = FindProperty(MPropertyNames.InverseClipMask, properties, false);
-            m_ClipMaskProp = FindProperty(MPropertyNames.ClipMask,properties,false);
+            m_ClipMaskProp = FindProperty(MPropertyNames.ClipMask, properties, false);
             m_CutoffProp = FindProperty(MPropertyNames.Cutoff, properties, false);
             m_EnvironmentReflectionsProp = FindProperty(MPropertyNames.EnvironmentReflections, properties, false);
             m_RenderQueueProp = FindProperty(MPropertyNames.RenderQueue, properties, false);
@@ -312,10 +304,6 @@ namespace ChiliMilk.Toon.Editor
             //Base
             m_BumpMapProp = FindProperty(MPropertyNames.BumpMap, properties, false);
             m_BumpScaleProp = FindProperty(MPropertyNames.BumpScale, properties, false);
-            m_OcclusionMapProp = FindProperty(MPropertyNames.OcclusionMap, properties, false);
-            m_OcclusionStrengthProp = FindProperty(MPropertyNames.OcclusionStrength, properties, false);
-            m_EmissionMapProp = FindProperty(MPropertyNames.EmissionMap, properties, false);
-            m_EmissionColorProp = FindProperty(MPropertyNames.EmissionColor, properties, false);
             m_EnableHairSpecularProp = FindProperty(MPropertyNames.EnableHairSpecular, properties, false);
             
             //Outline
@@ -370,7 +358,7 @@ namespace ChiliMilk.Toon.Editor
             bool alphaClip = material.GetFloat(MPropertyNames.AlphaClip) == 1;
             if (alphaClip)
             {
-                SetKeyword(material,"_INVERSECLIPMASK",material.GetFloat(MPropertyNames.InverseClipMask) == 1);
+                SetKeyword(material, "_INVERSECLIPMASK", material.GetFloat(MPropertyNames.InverseClipMask) == 1);
                 material.EnableKeyword("_ALPHATEST_ON");
                 //material.SetOverrideTag("RenderType", "TransparentCutout");
             }
@@ -407,19 +395,19 @@ namespace ChiliMilk.Toon.Editor
             // Receive Shadows
             if (material.HasProperty(MPropertyNames.ReceiveShadows))
             {
-                SetKeyword(material,"_RECEIVE_SHADOWS_OFF", material.GetFloat(MPropertyNames.ReceiveShadows) == 0.0f);
+                SetKeyword(material, "_RECEIVE_SHADOWS_OFF", material.GetFloat(MPropertyNames.ReceiveShadows) == 0.0f);
             }
 
             // Highlights
             if (material.HasProperty(MPropertyNames.SpecularHighlights))
             {
-                SetKeyword(material,"_SPECULARHIGHLIGHTS_OFF", material.GetFloat(m_SpecularHighlightsProp.name) == 0.0f);
+                SetKeyword(material, "_SPECULARHIGHLIGHTS_OFF", material.GetFloat(m_SpecularHighlightsProp.name) == 0.0f);
             }
 
             // Reflections
             if (material.HasProperty(MPropertyNames.EnvironmentReflections))
             {
-                SetKeyword(material,"_ENVIRONMENTREFLECTIONS_OFF", material.GetFloat(m_EnvironmentReflectionsProp.name) == 0.0f);
+                SetKeyword(material, "_ENVIRONMENTREFLECTIONS_OFF", material.GetFloat(m_EnvironmentReflectionsProp.name) == 0.0f);
             }
 
             // Metallic Specular
@@ -429,36 +417,28 @@ namespace ChiliMilk.Toon.Editor
                 hasGlossMap = material.GetTexture(MPropertyNames.SpecGlossMap) != null;
             else
                 hasGlossMap = material.GetTexture(MPropertyNames.MetallicGlossMap) != null;
-            SetKeyword(material,"_METALLICSPECGLOSSMAP", hasGlossMap);
+            SetKeyword(material, "_METALLICSPECGLOSSMAP", hasGlossMap);
 
             // Normal
-            SetKeyword(material,"_NORMALMAP", material.GetTexture(MPropertyNames.BumpMap) != null);
-
-            // Occlusion
-            SetKeyword(material,"_OCCLUSIONMAP", material.GetTexture(MPropertyNames.OcclusionMap) != null);
-
-            // Emission
-            bool hasEmissionMap = material.GetTexture(MPropertyNames.EmissionMap) != null;
-            Color emissionColor = material.GetColor(MPropertyNames.EmissionColor);
-            SetKeyword(material,"_EMISSION", hasEmissionMap || emissionColor != Color.black);
+            SetKeyword(material, "_NORMALMAP", material.GetTexture(MPropertyNames.BumpMap) != null);
 
             // HairSpecular
-            SetKeyword(material,"_HAIRSPECULAR", material.GetFloat(MPropertyNames.EnableHairSpecular) == 1.0f);
-            SetKeyword(material,"_SPECULARSHIFTMAP", material.GetTexture(MPropertyNames.SpecularShiftMap) != null);
+            SetKeyword(material, "_HAIRSPECULAR", material.GetFloat(MPropertyNames.EnableHairSpecular) == 1.0f);
+            SetKeyword(material, "_SPECULARSHIFTMAP", material.GetTexture(MPropertyNames.SpecularShiftMap) != null);
 
             //InShadowMap
             SetKeyword(material, "_INSHADOWMAP", material.GetFloat(MPropertyNames.EnableInShadowMap) == 1.0);
 
             //Rim
-            SetKeyword(material,"_RIMLIGHT", material.GetFloat(MPropertyNames.EnableRimLight) == 1.0f);
-            SetKeyword(material,"_BLENDRIM", material.GetFloat(MPropertyNames.BlendRim) == 1.0f);
+            SetKeyword(material, "_RIMLIGHT", material.GetFloat(MPropertyNames.EnableRimLight) == 1.0f);
+            SetKeyword(material, "_BLENDRIM", material.GetFloat(MPropertyNames.BlendRim) == 1.0f);
 
             //Outline
-            SetKeyword(material,"_USESMOOTHNORMAL", material.GetFloat(MPropertyNames.UseSmoothNormal) == 1.0);
+            SetKeyword(material, "_USESMOOTHNORMAL", material.GetFloat(MPropertyNames.UseSmoothNormal) == 1.0);
             material.SetShaderPassEnabled("Outline", material.GetFloat(MPropertyNames.EnableOutline) == 1.0f);
 
             //RampMap
-            SetKeyword(material,"_DIFFUSERAMPMAP", material.GetFloat(MPropertyNames.EnableRampMap)==1.0f);
+            SetKeyword(material, "_DIFFUSERAMPMAP", material.GetFloat(MPropertyNames.EnableRampMap) == 1.0f);
         }
         #endregion
 
@@ -549,7 +529,7 @@ namespace ChiliMilk.Toon.Editor
             var material = materialEditor.target as Material;
 
             // Workflow Mode
-            DoPopup(Styles.WorkflowMode, m_WorkflowModeProp, Enum.GetNames(typeof(WorkflowMode)),materialEditor);
+            DoPopup(Styles.WorkflowMode, m_WorkflowModeProp, Enum.GetNames(typeof(WorkflowMode)), materialEditor);
 
             //// Render Face
             //if (material.HasProperty(MPropertyNames.Cull))
@@ -675,20 +655,6 @@ namespace ChiliMilk.Toon.Editor
             // Normal
             materialEditor.TexturePropertySingleLine(Styles.Normal, m_BumpMapProp, m_BumpScaleProp);
 
-            // Occlusion
-            materialEditor.TexturePropertySingleLine(Styles.Occlusion, m_OcclusionMapProp,
-                m_OcclusionMapProp.textureValue != null ? m_OcclusionStrengthProp : null);
-
-            // Emission
-            var hadEmissionTexture = m_EmissionMapProp.textureValue != null;
-            materialEditor.TexturePropertyWithHDRColor(Styles.Emission, m_EmissionMapProp,
-                m_EmissionColorProp, false);
-
-            // If texture was assigned and color was black set color to white
-            var brightness = m_EmissionColorProp.colorValue.maxColorComponent;
-            if (m_EmissionMapProp.textureValue != null && !hadEmissionTexture && brightness <= 0f)
-                m_EmissionColorProp.colorValue = Color.white;
-
             // TilingOffset
             materialEditor.TextureScaleOffsetProperty(m_BaseMapProp);
         }
@@ -767,9 +733,8 @@ namespace ChiliMilk.Toon.Editor
 
             // Smoothness
             EditorGUI.BeginChangeCheck();
-            EditorGUI.indentLevel+=2;
-            var smooth = EditorGUILayout.Slider(Styles.Smoothness, m_SmoothnessProp.floatValue, 0f, 1f);
-            EditorGUI.indentLevel-=2;
+            EditorGUI.indentLevel += 2;
+            EditorGUI.indentLevel -= 2;
             if (EditorGUI.EndChangeCheck())
             {
                 m_SmoothnessProp.floatValue = smooth;
