@@ -1,4 +1,4 @@
-﻿#ifndef TOON_LIGHTING_INCLUDED
+#ifndef TOON_LIGHTING_INCLUDED
 #define TOON_LIGHTING_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.core/ShaderLibrary/Color.hlsl"
@@ -140,21 +140,20 @@ half3 GlobalIlluminationToon(BRDFDataToon brdfData, half3 bakedGI, half occlusio
 
 half3 DoubleShadowToon(SurfaceDataToon surfaceData,half3 BaseColor,half2 radiance)
 {
-    half3 finalColor = lerp(lerp(surfaceData.shadow2,surfaceData.shadow1,radiance.y),BaseColor,radiance.x);
+        half3 finalColor = lerp(surfaceData.shadow,BaseColor,radiance.x);
     return finalColor;
 }
 
 #ifndef _DIFFUSERAMPMAP
-half2 RadianceToon(SurfaceDataToon surfaceData, half3 normalWS, half3 lightDirectionWS,half lightAttenuation)
+        half RadianceToon(SurfaceDataToon surfaceData, half3 normalWS, half3 lightDirectionWS,half lightAttenuation)
 {
-    half2 radiance;
-    lightAttenuation = lerp(StepAntiAliasing(lightAttenuation,0.5),lightAttenuation,_Shadow1Feather);
+            half radiance;
+            lightAttenuation = lerp(StepAntiAliasing(lightAttenuation,0.5),lightAttenuation,_shadowFeather);
     #ifdef _INSHADOWMAP
     lightAttenuation = saturate(lightAttenuation*surfaceData.inShadow);
     #endif
     half H_Lambert = 0.5*dot(normalWS, lightDirectionWS)+0.5;
-    radiance.x = DiffuseRadianceToon(H_Lambert,_Shadow1Step,_Shadow1Feather)*lightAttenuation;
-    radiance.y = DiffuseRadianceToon(H_Lambert,_Shadow2Step,_Shadow2Feather);
+            radiance = DiffuseRadianceToon(H_Lambert,_shadowStep,_shadowFeather)*lightAttenuation;
     return radiance;
 }
 #else

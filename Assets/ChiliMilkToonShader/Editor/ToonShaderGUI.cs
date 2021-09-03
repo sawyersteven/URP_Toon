@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using UnityEngine;
 using UnityEditor;
 
@@ -42,10 +42,8 @@ namespace ChiliMilk.Toon.Editor
             //Shadow
             public static readonly GUIContent EnableRampMap = new GUIContent("UseRampMapShadow");
             public static readonly GUIContent DiffuseRampMap = new GUIContent("DiffuseRampMap VOffset");
-            public static readonly GUIContent Shadow1Step = new GUIContent("Shadow1Step");
-            public static readonly GUIContent Shadow1Feather = new GUIContent("Shadow1Feather");
-            public static readonly GUIContent Shadow2Step = new GUIContent("Shadow2Step");
-            public static readonly GUIContent Shadow2Feather = new GUIContent("Shadow2Feather");
+            public static readonly GUIContent shadowStep = new GUIContent("shadowStep");
+            public static readonly GUIContent shadowFeather = new GUIContent("shadowFeather");
             public static readonly GUIContent EnableInShadowMap = new GUIContent("EnableInShadowMap");
             public static readonly GUIContent InShadowMap = new GUIContent("InShadowMap");
             public static readonly GUIContent ReceiveShadows = new GUIContent("Receive Shadows");
@@ -91,18 +89,14 @@ namespace ChiliMilk.Toon.Editor
             public static readonly string StencilChannel = "_StencilChannel";
             public static readonly string EnvironmentReflections = "_EnvironmentReflections";
             public static readonly string RenderQueue = "_RenderQueue";
-            
+
             //Diffuse
             public static readonly string BaseMap = "_BaseMap";
             public static readonly string BaseColor = "_BaseColor";
-            public static readonly string Shadow1Color = "_Shadow1Color";
-            //public static readonly string Shadow1Map = "_Shadow1Map";
-            public static readonly string Shadow1Step = "_Shadow1Step";
-            public static readonly string Shadow1Feather = "_Shadow1Feather";
-            public static readonly string Shadow2Color = "_Shadow2Color";
-            //public static readonly string Shadow2Map = "_Shadow2Map";
-            public static readonly string Shadow2Step = "_Shadow2Step";
-            public static readonly string Shadow2Feather = "_Shadow2Feather";
+            public static readonly string shadowColor = "_shadowColor";
+            //public static readonly string shadowMap = "_shadowMap";
+            public static readonly string shadowStep = "_shadowStep";
+            public static readonly string shadowFeather = "_shadowFeather";
             public static readonly string EnableInShadowMap = "_EnableInShadowMap";
             public static readonly string InShadowMap = "_InShadowMap";
             public static readonly string InShadowMapStrength = "_InShadowMapStrength";
@@ -206,18 +200,14 @@ namespace ChiliMilk.Toon.Editor
         private MaterialProperty m_EnableStencilProp;
         private MaterialProperty m_StencilTypeProp;
         private MaterialProperty m_StencilChannelProp;
-        
+
         //Diffuse
         private MaterialProperty m_BaseMapProp;
         private MaterialProperty m_BaseColorProp;
-        private MaterialProperty m_Shadow1ColorProp;
-        //private MaterialProperty m_Shadow1MapProp;
-        private MaterialProperty m_Shadow1StepProp;
-        private MaterialProperty m_Shadow1FeatherProp;
-        private MaterialProperty m_Shadow2ColorProp;
-        //private MaterialProperty m_Shadow2MapProp;
-        private MaterialProperty m_Shadow2StepProp;
-        private MaterialProperty m_Shadow2FeatherProp;
+        private MaterialProperty m_shadowColorProp;
+        //private MaterialProperty m_shadowMapProp;
+        private MaterialProperty m_shadowStepProp;
+        private MaterialProperty m_shadowFeatherProp;
         private MaterialProperty m_EnableRampMapProp;
         private MaterialProperty m_DiffuseRampMapProp;
         private MaterialProperty m_DiffuseRampVProp;
@@ -292,14 +282,10 @@ namespace ChiliMilk.Toon.Editor
             //Diffuse
             m_BaseMapProp = FindProperty(MPropertyNames.BaseMap, properties, false);
             m_BaseColorProp = FindProperty(MPropertyNames.BaseColor, properties, false);
-            m_Shadow1ColorProp = FindProperty(MPropertyNames.Shadow1Color, properties, false);
-            //m_Shadow1MapProp = FindProperty(MPropertyNames.Shadow1Map, properties, false);
-            m_Shadow1StepProp = FindProperty(MPropertyNames.Shadow1Step, properties, false);
-            m_Shadow1FeatherProp = FindProperty(MPropertyNames.Shadow1Feather, properties, false);
-            m_Shadow2ColorProp = FindProperty(MPropertyNames.Shadow2Color, properties, false);
-            //m_Shadow2MapProp = FindProperty(MPropertyNames.Shadow2Map, properties, false);
-            m_Shadow2StepProp = FindProperty(MPropertyNames.Shadow2Step, properties, false);
-            m_Shadow2FeatherProp = FindProperty(MPropertyNames.Shadow2Feather, properties, false);
+            m_shadowColorProp = FindProperty(MPropertyNames.shadowColor, properties, false);
+            //m_shadowMapProp = FindProperty(MPropertyNames.shadowMap, properties, false);
+            m_shadowStepProp = FindProperty(MPropertyNames.shadowStep, properties, false);
+            m_shadowFeatherProp = FindProperty(MPropertyNames.shadowFeather, properties, false);
             m_EnableRampMapProp = FindProperty(MPropertyNames.EnableRampMap, properties, false);
             m_DiffuseRampMapProp = FindProperty(MPropertyNames.DiffuseRampMap, properties, false);
             m_DiffuseRampVProp = FindProperty(MPropertyNames.DiffuseRampV, properties, false);
@@ -461,7 +447,7 @@ namespace ChiliMilk.Toon.Editor
             SetKeyword(material,"_SPECULARSHIFTMAP", material.GetTexture(MPropertyNames.SpecularShiftMap) != null);
 
             //InShadowMap
-            SetKeyword(material,"_INSHADOWMAP", material.GetFloat(MPropertyNames.EnableInShadowMap)==1.0);
+            SetKeyword(material, "_INSHADOWMAP", material.GetFloat(MPropertyNames.EnableInShadowMap) == 1.0);
 
             //Rim
             SetKeyword(material,"_RIMLIGHT", material.GetFloat(MPropertyNames.EnableRimLight) == 1.0f);
@@ -720,21 +706,15 @@ namespace ChiliMilk.Toon.Editor
             }
             else
             {
-                //materialEditor.TexturePropertySingleLine(Styles.Shadow1Map, m_Shadow1MapProp, m_Shadow1ColorProp);
-                //materialEditor.TexturePropertySingleLine(Styles.Shadow2Map, m_Shadow2MapProp, m_Shadow2ColorProp);
-                materialEditor.ColorProperty(m_Shadow1ColorProp, "Shadow1Color");
-                materialEditor.ColorProperty(m_Shadow2ColorProp, "Shadow2Color");
+                //materialEditor.TexturePropertySingleLine(Styles.shadowMap, m_shadowMapProp, m_shadowColorProp);
+                materialEditor.ColorProperty(m_shadowColorProp, "shadowColor");
                 EditorGUI.BeginChangeCheck();
-                var step1 = EditorGUILayout.Slider(Styles.Shadow1Step, m_Shadow1StepProp.floatValue, 0f, 1f);
-                var feather1 = EditorGUILayout.Slider(Styles.Shadow1Feather,m_Shadow1FeatherProp.floatValue,0f,1f);
-                var step2 = EditorGUILayout.Slider(Styles.Shadow2Step, m_Shadow2StepProp.floatValue, 0f, 1f);
-                var feather2 = EditorGUILayout.Slider(Styles.Shadow2Feather,m_Shadow2FeatherProp.floatValue,0f,1f);
+                var step1 = EditorGUILayout.Slider(Styles.shadowStep, m_shadowStepProp.floatValue, 0f, 1f);
+                var feather1 = EditorGUILayout.Slider(Styles.shadowFeather, m_shadowFeatherProp.floatValue, 0f, 1f);
                 if (EditorGUI.EndChangeCheck())
                 {
-                    m_Shadow1StepProp.floatValue = step1;
-                    m_Shadow1FeatherProp.floatValue = feather1;
-                    m_Shadow2StepProp.floatValue = step2;
-                    m_Shadow2FeatherProp.floatValue = feather2;
+                    m_shadowStepProp.floatValue = step1;
+                    m_shadowFeatherProp.floatValue = feather1;
                 }
             }
             //InShadowMap

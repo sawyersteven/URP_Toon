@@ -1,4 +1,4 @@
-﻿#ifndef TOON_PROPERTY_INCLUDED
+#ifndef TOON_PROPERTY_INCLUDED
 #define TOON_PROPERTY_INCLUDED
 
 #include "Packages/com.unity.render-pipelines.universal/ShaderLibrary/SurfaceInput.hlsl"
@@ -6,13 +6,10 @@
 CBUFFER_START(UnityPerMaterial)
 float4 _BaseMap_ST;
 half4 _BaseColor;
-half3 _Shadow1Color;
-half _Shadow1Step;
-half _Shadow1Feather;
-half _Shadow2Step;
-half _Shadow2Feather;
+    half3 _shadowColor;
+    half _shadowStep;
+    half _shadowFeather;
 half _DiffuseRampV;
-half3 _Shadow2Color;
 half _InShadowMapStrength;
 
 half4 _EmissionColor;
@@ -41,8 +38,7 @@ half4 _OutlineColor;
 CBUFFER_END
 
 TEXTURE2D(_ClipMask);   SAMPLER(sampler_ClipMask);
-//TEXTURE2D(_Shadow1Map);   SAMPLER(sampler_Shadow1Map);
-//TEXTURE2D(_Shadow2Map);   SAMPLER(sampler_Shadow2Map);
+    //TEXTURE2D(_shadowMap);   SAMPLER(sampler_shadowMap);
 #ifdef _INSHADOWMAP
 TEXTURE2D(_InShadowMap);  SAMPLER(sampler_InShadowMap);
 #endif
@@ -78,8 +74,7 @@ struct SurfaceDataToon
         half specularShift2;
     #endif
     //Shadow
-    half3 shadow1;
-    half3 shadow2;
+        half3 shadow;
     #ifdef _INSHADOWMAP
         half inShadow;
     #endif
@@ -173,10 +168,8 @@ inline void InitializeSurfaceDataToon(float2 uv,out SurfaceDataToon outSurfaceDa
     outSurfaceData.alpha = Alpha(albedoAlpha.a*SampleClipMask(uv), _BaseColor, _Cutoff);
     half4 specGloss = SampleMetallicSpecGloss(uv, albedoAlpha.a,_Smoothness);
     outSurfaceData.albedo = albedoAlpha.rgb * _BaseColor.rgb;
-    //outSurfaceData.shadow1 = SAMPLE_TEXTURE2D(_Shadow1Map,sampler_Shadow1Map,uv)*_Shadow1Color;
-    //outSurfaceData.shadow2 = SAMPLE_TEXTURE2D(_Shadow2Map,sampler_Shadow2Map,uv)*_Shadow2Color;
-    outSurfaceData.shadow1 = albedoAlpha.rgb *_Shadow1Color;
-    outSurfaceData.shadow2 = albedoAlpha.rgb *_Shadow2Color;
+        //outSurfaceData.shadow = SAMPLE_TEXTURE2D(_shadowMap,sampler_shadowMap,uv)*_shadowColor;
+        outSurfaceData.shadow = albedoAlpha.rgb *_shadowColor;
 #ifdef _INSHADOWMAP
     outSurfaceData.inShadow = SampleInShadow(uv);
 #endif

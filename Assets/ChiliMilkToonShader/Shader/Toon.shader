@@ -31,14 +31,11 @@
         //Shadow
         _BaseMap("Albedo", 2D) = "white" {}
 		_BaseColor("Color", Color) = (1.0, 1.0, 1.0, 1.0)
-        _Shadow1Color("Shadow1Color", Color) = (0.5, 0.5, 0.5, 0.5)
-        //_Shadow1Map("Shadow1 Map",2D) = "white" {} 
-        _Shadow1Step("Shadow1 Step",Range(0.0,1.0)) = 0.5
-        _Shadow1Feather("Shadow1 Feather",Range(0.0,1.0)) = 0.0
-        _Shadow2Color("Shadow2Color", Color) = (0.0, 0.0, 0.0, 0.0)
-        //_Shadow2Map("Shadow2 Map",2D) = "white" {} 
-        _Shadow2Step("Shadow1 Step",Range(0.0,1.0)) = 0.3
-        _Shadow2Feather("Shadow1 Feather",Range(0.0,1.0)) = 0.0
+        
+        _shadowColor("shadowColor", Color) = (0.13,0.13,0.13)
+        //_shadowMap("shadow Map",2D) = "white" {} 
+        _shadowStep("shadow Step",Range(0.0,1.0)) = 0.5
+        _shadowFeather("shadow Feather",Range(0.0,1.0)) = 0.0
          [ToggleOff]_EnableInShadowMap("Enable ShadowMap",Float) = 0.0
         _InShadowMap("Shadow Map",2D) = "white"{}
         _InShadowMapStrength("ShadowMap Strength",Range(0.0,1.0)) = 1.0
