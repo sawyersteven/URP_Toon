@@ -1,14 +1,14 @@
-Shader "ChiliMilk/Toon"
+﻿Shader "ChiliMilk/Toon"
 {
     Properties
     {
         // Surface Options
         [HideInInspector] _WorkflowMode("WorkflowMode", Float) = 0.0
         [HideInInspector] _Cull("__cull", Float) = 2.0
-		[HideInInspector][ToggleOff]_AlphaClip("__clip", Float) = 0.0
+        [HideInInspector][ToggleOff]_AlphaClip("__clip", Float) = 0.0
         [ToggleOff] _InverseClipMask("_InverseClipMask",Float) = 0.0
         _ClipMask("ClipMask",2D) = "white"{}
-		_Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
+        _Cutoff("Alpha Cutoff", Range(0.0, 1.0)) = 0.5
         [HideInInspector] _SurfaceType("__surface", Float) = 0.0
         [HideInInspector] _SrcBlend("__src", Float) = 1.0
         [HideInInspector] _DstBlend("__dst", Float) = 0.0
@@ -22,28 +22,28 @@ Shader "ChiliMilk/Toon"
 
         // Default 
         _BumpMap("Normal Map", 2D) = "bump" {}
-		_BumpScale("Scale", Float) = 1.0
+        _BumpScale("Scale", Float) = 1.0
 
         //Shadow
         _BaseMap("Albedo", 2D) = "white" {}
-		_BaseColor("Color", Color) = (1.0, 1.0, 1.0, 1.0)
+        _BaseColor("Color", Color) = (1.0, 1.0, 1.0, 1.0)
         
         _shadowColor("shadowColor", Color) = (0.13,0.13,0.13)
         //_shadowMap("shadow Map",2D) = "white" {} 
         _shadowStep("shadow Step",Range(0.0,1.0)) = 0.5
         _shadowFeather("shadow Feather",Range(0.0,1.0)) = 0.0
-         [ToggleOff]_EnableInShadowMap("Enable ShadowMap",Float) = 0.0
+        [ToggleOff]_EnableInShadowMap("Enable ShadowMap",Float) = 0.0
         _InShadowMap("Shadow Map",2D) = "white"{}
         _InShadowMapStrength("ShadowMap Strength",Range(0.0,1.0)) = 1.0
 
         //Specular
-		_Metallic("Metallic", Range(0.0, 1.0)) = 0.0
+        _Metallic("Metallic", Range(0.0, 1.0)) = 0.0
         _MetallicGlossMap("Metallic", 2D) = "white" {}
         _SpecColor("Specular", Color) = (0.2, 0.2, 0.2)
         _SpecGlossMap("Specular", 2D) = "white" {}
-        _SpecularStep("SpecularStep",Range(0.0,1)) = 0.5
+        _SpecularStep("SpecularStep",Range(0.0,1)) = 0.7
         _SpecularFeather("SpecularFeather",Range(0.0,1))= 0
-		_Smoothness("Smoothness", Range(0.0, 1.0)) = 0.5
+        _SpecularSmoothness("SpecularSmoothness", Range(0.0, 1.0)) = 0.3
 
         //Ramp
         [ToggleOff]_EnableRampMap("EnableRampMap",Float) = 0.0
@@ -74,7 +74,7 @@ Shader "ChiliMilk/Toon"
 
         // Advanced Options
         [ToggleOff] _ReceiveShadows("Receive Shadows", Float) = 1.0
-		[ToggleOff] _SpecularHighlights("Specular Highlights", Float) = 1.0
+        [ToggleOff] _SpecularHighlights("Specular Highlights", Float) = 1.0
         [ToggleOff] _EnvironmentReflections("Environment Reflections", Float) = 0.0
         _RenderQueue("Render Queue", Float) = 2000
         
@@ -120,7 +120,7 @@ Shader "ChiliMilk/Toon"
             ENDHLSL
         }
         
-       	Pass
+        Pass
         {
             Name "ForwardLit"
             Tags{"LightMode" = "UniversalForward"}
@@ -180,7 +180,7 @@ Shader "ChiliMilk/Toon"
             #include "../Include/ToonForwardPass.hlsl"
             ENDHLSL
         }
-         
+        
         Pass
         {
             Name "ShadowCaster"
@@ -226,7 +226,7 @@ Shader "ChiliMilk/Toon"
             #pragma exclude_renderers gles gles3 glcore
             #pragma target 4.5
 
-             // -------------------------------------
+            // -------------------------------------
             // Material Keywords
             #pragma shader_feature_local_fragment _ALPHATEST_ON
 
@@ -398,7 +398,7 @@ Shader "ChiliMilk/Toon"
             #include "../Include/ToonForwardPass.hlsl"
             ENDHLSL
         }
-         
+        
         Pass
         {
             Name "ShadowCaster"
@@ -444,7 +444,7 @@ Shader "ChiliMilk/Toon"
             #pragma only_renderers gles gles3 glcore
             #pragma target 2.0
 
-             // -------------------------------------
+            // -------------------------------------
             // Material Keywords
             #pragma shader_feature_local_fragment _ALPHATEST_ON
 

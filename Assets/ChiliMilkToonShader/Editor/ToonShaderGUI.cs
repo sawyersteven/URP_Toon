@@ -1,4 +1,4 @@
-using System;
+﻿using System;
 using UnityEngine;
 using UnityEditor;
 
@@ -113,7 +113,7 @@ namespace ChiliMilk.Toon.Editor
             public static readonly string SpecGlossMap = "_SpecGlossMap";
             public static readonly string SpecStep = "_SpecularStep";
             public static readonly string SpecFeather = "_SpecularFeather";
-            public static readonly string Smoothness = "_Smoothness";
+            public static readonly string SpecularSmoothness = "_SpecularSmoothness";
             public static readonly string EnableHairSpecular = "_EnableHairSpecular";
             public static readonly string SpecularShiftMap = "_SpecularShiftMap";
             public static readonly string SpecularShiftIntensity = "_SpecularShiftIntensity";
@@ -223,7 +223,7 @@ namespace ChiliMilk.Toon.Editor
         private MaterialProperty m_SpecGlossMapProp;
         private MaterialProperty m_SpecStepProp;
         private MaterialProperty m_SpecFeatherProp;
-        private MaterialProperty m_SmoothnessProp;
+        private MaterialProperty m_SpecularSmoothnessProp;
         private MaterialProperty m_SpecularHighlightsProp;
         private MaterialProperty m_EnableHairSpecularProp;
         private MaterialProperty m_SpeculatShiftMapProp;
@@ -293,7 +293,7 @@ namespace ChiliMilk.Toon.Editor
             m_SpecGlossMapProp = FindProperty(MPropertyNames.SpecGlossMap, properties, false);
             m_SpecStepProp = FindProperty(MPropertyNames.SpecStep, properties, false);
             m_SpecFeatherProp = FindProperty(MPropertyNames.SpecFeather, properties, false);
-            m_SmoothnessProp = FindProperty(MPropertyNames.Smoothness, properties, false);
+            m_SpecularSmoothnessProp = FindProperty(MPropertyNames.SpecularSmoothness, properties, false);
             m_SpeculatShiftMapProp = FindProperty(MPropertyNames.SpecularShiftMap, properties, false);
             m_SpecularShiftIntensityProp = FindProperty(MPropertyNames.SpecularShiftIntensity, properties, false);
             m_SpecularShift1Prop = FindProperty(MPropertyNames.SpecularShift1, properties, false);
@@ -351,7 +351,7 @@ namespace ChiliMilk.Toon.Editor
             // WorkflowMode
             if (material.HasProperty(MPropertyNames.WorkflowMode))
             {
-                SetKeyword(material,"_SPECULAR_SETUP", material.GetFloat(MPropertyNames.WorkflowMode) == 0);
+                SetKeyword(material, "_SPECULAR_SETUP", material.GetFloat(MPropertyNames.WorkflowMode) == 0);
             }
             
             //Alpha clip
@@ -734,10 +734,11 @@ namespace ChiliMilk.Toon.Editor
             // Smoothness
             EditorGUI.BeginChangeCheck();
             EditorGUI.indentLevel += 2;
+            var smooth = EditorGUILayout.Slider(Styles.Smoothness, m_SpecularSmoothnessProp.floatValue, 0f, 1f);
             EditorGUI.indentLevel -= 2;
             if (EditorGUI.EndChangeCheck())
             {
-                m_SmoothnessProp.floatValue = smooth;
+                m_SpecularSmoothnessProp.floatValue = smooth;
             }
             
             // HairSpecular
